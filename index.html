@@ -1,0 +1,1366 @@
+d513827e-e711-421a-b1ba-4c50b3b13144.png Pasted text(20260811-172011).txt
+Document c14eed14-a464-4b97-ad77-a56618f1bd6f.png Ahhh okay 😭 — if Preferences:
+Open User Settings (JSON) opens the exact same read-only page, then you're not
+getting the actual user settings file. Let's bypass the menu entirely. Do this
+Press Ctrl + Shift + P → search: Preferences: Open User Settings (JSON) But
+don't select the Live Server configuration/schema. Instead, let's directly open
+your real settings file. Press: Ctrl + P Paste this:
+%APPDATA%\Code\User\settings.json and press Enter. You should get a file whose
+path looks like: C:\Users\Acer\AppData\Roaming\Code\User\settings.json That file
+should NOT be read-only. Then add: "liveServer.settings.port": 5501 If that file
+doesn't exist No problem. In the VS Code terminal run: notepad
+"$env:APPDATA\Code\User\settings.json" If Windows asks whether to create it,
+click Yes. Put: { "liveServer.settings.port": 5501 } Save it. Then completely
+restart VS Code and start Live Server again. Why this is happening The file you
+showed is Live Server's extension configuration definition. It contains the
+default: "liveServer.settings.port": 5500 but it's read-only because it's part
+of the installed extension. Your uploaded settings dump also shows that
+liveServer.settings.port is currently defined as 5500. So don't modify that
+file. Try the notepad "$env:APPDATA\Code\User\settings.json" command — that's
+the quickest route. { "terminal.integrated.shellArgs.windows":
+["-ExecutionPolicy", "Bypass"], "editor.fontSize": 16, "python.pythonPath":
+"C:\Users\Acer\AppData\Local\Programs\Python\Python37\python.exe",
+"C_Cpp.updateChannel": "Insiders", "todo-tree.tree.showScanModeButton": false,
+"editor.tabSize": 2, "[html]": { "editor.defaultFormatter":
+"esbenp.prettier-vscode", }, "workbench.iconTheme": "material-icon-theme",
+"editor.formatOnSave": true, "editor.renameOnType": true,
+"terminal.integrated.automationShell.linux": "", "python.linting.pylintArgs":
+["--load-plugins", "pylint_flask"], "terminal.integrated.shell.windows":
+"C:\WINDOWS\System32\cmd.exe", "editor.suggestSelection": "first",
+"vsintellicode.modify.editor.suggestSelection":
+"automaticallyOverrodeDefaultValue", "workbench.editorAssociations": { ".ipynb":
+"jupyter-notebook", }, "files.associations": { ".html": "html", },
+"files.exclude": { "/.classpath": true, "/.project": true, "/.settings": true,
+"/.factorypath": true, }, "[javascript]": { "editor.defaultFormatter":
+"esbenp.prettier-vscode", }, "python.defaultInterpreterPath":
+"C:\Users\Acer\AppData\Local\Programs\Python\Python310\python.exe",
+"notebook.cellToolbarLocation": { "default": "right", "jupyter-notebook":
+"right", }, "editor.inlineSuggest.enabled": true, "github.copilot.enable": {
+"*": true, "plaintext": true, "markdown": true, "scminput": false, "yaml":
+false, "javascript": true, }, "bracketPairColorizer.depreciation-notice": false,
+"[typescriptreact]": { "editor.defaultFormatter": "esbenp.prettier-vscode", },
+"[javascriptreact]": { "editor.defaultFormatter": "esbenp.prettier-vscode", },
+"[python]": { "editor.formatOnType": true, }, "java.import.gradle.java.home":
+"F:\Software\Android Studio\jbr", "workbench.colorTheme": "Dark+",
+"terminal.integrated.defaultProfile.windows": "Command Prompt",
+"maven.executable.path": "C:\Program Files\apache-maven-3.9.5\bin\mvn.cmd",
+"redhat.telemetry.enabled": false, "terminal.integrated.profiles.windows": {
+"PowerShell": { "source": "PowerShell", "icon": "terminal-powershell", },
+"Command Prompt": { "path": "C:\WINDOWS\System32\cmd.exe", "args": [], }, "Git
+Bash": { "source": "Git Bash", "icon": "terminal-git-bash", "path": "C:\Program
+Files\Git\bin\bash.exe", "args": ["--login", "-i"], }, },
+"go.toolsManagement.autoUpdate": true, } YES — this is the actual User
+settings.json. 🎯 And I can see the problem: there is currently no
+liveServer.settings.port setting in this file. Add it near the bottom, just
+before the final }. Change the bottom from: "go.toolsManagement.autoUpdate":
+true, } to: "go.toolsManagement.autoUpdate": true, "liveServer.settings.port":
+5501 } So the last part should look exactly like: "Git Bash": { "source": "Git
+Bash", "icon": "terminal-git-bash", "path": "C:\\Program
+Files\\Git\\bin\\bash.exe", "args": ["--login", "-i"] } },
+"go.toolsManagement.autoUpdate": true, "liveServer.settings.port": 5501 } Then
+do this 1. Save Ctrl + S 2. Completely stop Live Server If you have a Port: 5500
+button in the bottom-right, click it / stop the server. 3. Restart VS Code I'd
+actually restart VS Code here because Live Server has already been fighting with
+the existing 5500 process. 4. Open your index.html Right-click → Open with Live
+Server You should now get: http://127.0.0.1:5501/index.html ⚠️ One thing Your
+pasted settings contain a bunch of trailing commas, e.g.: "[html]": {
+"editor.defaultFormatter": "esbenp.prettier-vscode", }, VS Code's settings file
+can tolerate some JSONC syntax, so don't go around fixing all of those. Just add
+the Live Server setting as shown above. And importantly, don't touch the
+read-only Live Server file you showed earlier. That was the extension's default
+configuration; this file you're showing now is the correct place to override it.
+If after restarting it still opens 5500, tell me what URL Live Server shows in
+the bottom-right — then we'll check whether you have a workspace-level
+.vscode/settings.json overriding your user setting. Pasted code.html File Make
+the code more usable, not empty buttons Yep — this is the direction FileX
+actually needs. Your original page had the UI, but most controls were just
+decorative buttons. I updated the attached HTML so the dashboard behaves like a
+real app. What's now functional Download button → validates the URL and adds it
+to the queue. Download simulation → progress increases automatically so you can
+see the UI working. Downloads sidebar → shows active downloads. History → shows
+completed/failed downloads. Search → filters files instantly. View All →
+navigates to Downloads. Pause/Cancel → changes the download state. Remove →
+removes a download. Details → shows download information. Settings →
+concurrency, folder, and notifications are saved using localStorage. Analytics →
+activity/performance section. Help → actual help dialog. Logout →
+confirmation/action feedback. Toast notifications → feedback when actions
+happen. Responsive sidebar/mobile behavior is retained. The original had the
+dashboard structure and static download table, but the sidebar links and buttons
+weren't wired to behavior. The download form was also just an input plus button
+with no action attached. Your updated file Download the usable FileX dashboard
+HTML One important thing: the download itself is still simulated in the browser.
+That's intentional. The next step is to replace that simulation with your Go
+FileX backend API, so clicking Download actually sends the URL to your Go server
+and your goroutines/workers handle the real download. That's where this starts
+becoming FileX rather than just a pretty dashboard. 😎
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FileX - File Downloader</title>
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    />
+
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        background: #f5f7fb;
+        color: #1f2937;
+        font-family:
+          Inter,
+          system-ui,
+          -apple-system,
+          BlinkMacSystemFont,
+          "Segoe UI",
+          sans-serif;
+      }
+
+      .sidebar {
+        width: 250px;
+        height: 100vh;
+        position: fixed;
+        inset: 0 auto 0 0;
+        background: #111827;
+        color: #fff;
+        padding: 24px 16px;
+        z-index: 1000;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 0 12px 30px;
+      }
+
+      .brand-icon {
+        width: 42px;
+        height: 42px;
+        border-radius: 12px;
+        background: #2563eb;
+        display: grid;
+        place-items: center;
+        font-size: 22px;
+      }
+
+      .brand h4 {
+        margin: 0;
+        font-weight: 700;
+      }
+      .brand small {
+        color: #9ca3af;
+      }
+
+      .sidebar-section {
+        color: #6b7280;
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        padding: 0 12px;
+        margin: 20px 0 10px;
+      }
+
+      .sidebar-link {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        gap: 13px;
+        padding: 12px 14px;
+        margin: 4px 0;
+        border: 0;
+        border-radius: 9px;
+        color: #9ca3af;
+        background: transparent;
+        text-decoration: none;
+        text-align: left;
+        transition: 0.2s;
+        cursor: pointer;
+      }
+
+      .sidebar-link:hover,
+      .sidebar-link.active {
+        background: #2563eb;
+        color: #fff;
+      }
+
+      .sidebar-link i {
+        font-size: 18px;
+      }
+      .sidebar-bottom {
+        position: absolute;
+        bottom: 20px;
+        left: 16px;
+        right: 16px;
+      }
+
+      .main {
+        margin-left: 250px;
+        min-height: 100vh;
+      }
+
+      .topbar {
+        height: 72px;
+        background: #fff;
+        border-bottom: 1px solid #e5e7eb;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 32px;
+        position: sticky;
+        top: 0;
+        z-index: 900;
+      }
+
+      .page-title h3 {
+        margin: 0;
+        font-size: 21px;
+        font-weight: 700;
+      }
+      .page-title small {
+        color: #9ca3af;
+      }
+
+      .profile {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .avatar {
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        background: #dbeafe;
+        color: #2563eb;
+        display: grid;
+        place-items: center;
+        font-weight: 700;
+      }
+
+      .content {
+        padding: 30px 32px;
+      }
+
+      .stat-card,
+      .section-card {
+        background: #fff;
+        border: 1px solid #e5e7eb;
+        border-radius: 14px;
+      }
+
+      .stat-card {
+        padding: 20px;
+        height: 100%;
+        transition: 0.2s;
+      }
+
+      .stat-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.05);
+      }
+
+      .stat-icon {
+        width: 45px;
+        height: 45px;
+        border-radius: 11px;
+        display: grid;
+        place-items: center;
+        font-size: 20px;
+        margin-bottom: 15px;
+      }
+
+      .blue {
+        background: #dbeafe;
+        color: #2563eb;
+      }
+      .green {
+        background: #dcfce7;
+        color: #16a34a;
+      }
+      .purple {
+        background: #f3e8ff;
+        color: #9333ea;
+      }
+      .orange {
+        background: #ffedd5;
+        color: #ea580c;
+      }
+
+      .stat-value {
+        font-size: 28px;
+        font-weight: 750;
+        margin-bottom: 3px;
+      }
+      .stat-label {
+        color: #6b7280;
+        font-size: 14px;
+      }
+
+      .download-card {
+        background: #111827;
+        color: #fff;
+        border-radius: 16px;
+        padding: 25px;
+      }
+
+      .download-card h4 {
+        font-weight: 700;
+      }
+      .download-input {
+        background: #1f2937;
+        border: 1px solid #374151;
+        color: #fff;
+      }
+
+      .download-input:focus {
+        background: #1f2937;
+        color: #fff;
+        border-color: #3b82f6;
+        box-shadow: none;
+      }
+
+      .download-input::placeholder {
+        color: #9ca3af;
+      }
+
+      .btn-download {
+        background: #2563eb;
+        border: none;
+        padding: 10px 20px;
+        font-weight: 600;
+      }
+
+      .btn-download:hover {
+        background: #1d4ed8;
+      }
+
+      .section-card {
+        overflow: hidden;
+      }
+      .section-header {
+        padding: 20px;
+        border-bottom: 1px solid #e5e7eb;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 15px;
+      }
+
+      .section-header h5 {
+        margin: 0;
+        font-weight: 700;
+      }
+
+      .table {
+        margin: 0;
+      }
+      .table th {
+        color: #6b7280;
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-weight: 600;
+        padding: 15px 20px;
+        white-space: nowrap;
+      }
+
+      .table td {
+        padding: 17px 20px;
+        vertical-align: middle;
+      }
+
+      .file-name {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .file-icon {
+        width: 38px;
+        height: 38px;
+        border-radius: 9px;
+        background: #eff6ff;
+        color: #2563eb;
+        display: grid;
+        place-items: center;
+        flex-shrink: 0;
+      }
+
+      .file-name strong {
+        display: block;
+        font-size: 14px;
+      }
+      .file-name small {
+        color: #9ca3af;
+      }
+
+      .status {
+        padding: 5px 10px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+        white-space: nowrap;
+      }
+
+      .status-completed {
+        background: #dcfce7;
+        color: #15803d;
+      }
+      .status-progress {
+        background: #dbeafe;
+        color: #1d4ed8;
+      }
+      .status-failed {
+        background: #fee2e2;
+        color: #dc2626;
+      }
+
+      .progress {
+        height: 7px;
+        min-width: 100px;
+      }
+      .action-btn {
+        border: 0;
+        background: transparent;
+        color: #6b7280;
+      }
+      .action-btn:hover {
+        background: #f3f4f6;
+        color: #111827;
+      }
+
+      .empty-state {
+        text-align: center;
+        padding: 45px 20px;
+        color: #6b7280;
+      }
+
+      .empty-state i {
+        font-size: 40px;
+        color: #9ca3af;
+      }
+
+      .toast-container {
+        z-index: 2000;
+      }
+
+      .page-section {
+        display: none;
+      }
+      .page-section.active {
+        display: block;
+      }
+
+      @media (max-width: 992px) {
+        .sidebar {
+          width: 75px;
+        }
+        .main {
+          margin-left: 75px;
+        }
+        .brand h4,
+        .brand small,
+        .sidebar-link span,
+        .sidebar-section {
+          display: none;
+        }
+        .brand {
+          justify-content: center;
+          padding-left: 0;
+          padding-right: 0;
+        }
+        .sidebar-link {
+          justify-content: center;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .topbar {
+          padding: 0 18px;
+        }
+        .content {
+          padding: 20px 18px;
+        }
+        .profile > div:last-child {
+          display: none;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-icon"><i class="bi bi-cloud-arrow-down"></i></div>
+        <div>
+          <h4>FileX</h4>
+          <small>File Downloader</small>
+        </div>
+      </div>
+
+      <div class="sidebar-section">Main</div>
+
+      <button class="sidebar-link active" data-page="dashboard">
+        <i class="bi bi-grid-1x2-fill"></i><span>Dashboard</span>
+      </button>
+
+      <button class="sidebar-link" data-page="downloads">
+        <i class="bi bi-download"></i><span>Downloads</span>
+      </button>
+
+      <button class="sidebar-link" data-page="history">
+        <i class="bi bi-clock-history"></i><span>History</span>
+      </button>
+
+      <div class="sidebar-section">System</div>
+
+      <button class="sidebar-link" data-page="analytics">
+        <i class="bi bi-bar-chart"></i><span>Analytics</span>
+      </button>
+
+      <button class="sidebar-link" data-page="settings">
+        <i class="bi bi-gear"></i><span>Settings</span>
+      </button>
+
+      <div class="sidebar-bottom">
+        <button class="sidebar-link" id="helpBtn">
+          <i class="bi bi-question-circle"></i><span>Help</span>
+        </button>
+        <button class="sidebar-link" id="logoutBtn">
+          <i class="bi bi-box-arrow-left"></i><span>Logout</span>
+        </button>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div class="page-title">
+          <h3 id="pageTitle">Dashboard</h3>
+          <small id="pageSubtitle">Manage your downloads</small>
+        </div>
+
+        <div class="profile">
+          <div class="avatar">V</div>
+          <div>
+            <strong>Vedant</strong>
+            <small class="d-block text-muted">Developer</small>
+          </div>
+        </div>
+      </header>
+
+      <div class="content">
+        <!-- DASHBOARD -->
+        <section id="dashboard" class="page-section active">
+          <div class="row g-4 mb-4">
+            <div class="col-xl-3 col-md-6">
+              <div class="stat-card">
+                <div class="stat-icon blue"><i class="bi bi-download"></i></div>
+                <div class="stat-value" id="totalDownloads">128</div>
+                <div class="stat-label">Total Downloads</div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6">
+              <div class="stat-card">
+                <div class="stat-icon green">
+                  <i class="bi bi-check-circle"></i>
+                </div>
+                <div class="stat-value" id="completedDownloads">114</div>
+                <div class="stat-label">Completed</div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6">
+              <div class="stat-card">
+                <div class="stat-icon purple"><i class="bi bi-hdd"></i></div>
+                <div class="stat-value" id="dataDownloaded">4.8 GB</div>
+                <div class="stat-label">Data Downloaded</div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6">
+              <div class="stat-card">
+                <div class="stat-icon orange">
+                  <i class="bi bi-speedometer2"></i>
+                </div>
+                <div class="stat-value" id="avgSpeed">18.4 MB/s</div>
+                <div class="stat-label">Average Speed</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="download-card mb-4">
+            <div class="row align-items-center">
+              <div class="col-lg-5 mb-3 mb-lg-0">
+                <h4>
+                  <i class="bi bi-cloud-arrow-down me-2"></i>Start a Download
+                </h4>
+                <p class="text-secondary mb-0">
+                  Paste a direct file URL and FileX will queue the download.
+                </p>
+              </div>
+
+              <div class="col-lg-7">
+                <form id="downloadForm">
+                  <div class="input-group">
+                    <input
+                      id="urlInput"
+                      type="url"
+                      class="form-control download-input"
+                      placeholder="https://example.com/file.zip"
+                      required
+                    />
+                    <button class="btn btn-primary btn-download" type="submit">
+                      <i class="bi bi-download me-1"></i> Download
+                    </button>
+                  </div>
+                  <div id="urlHelp" class="small mt-2 text-secondary">
+                    Demo mode: the UI simulates a download. Connect this form to
+                    your Go API later.
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+
+          <div class="section-card">
+            <div class="section-header">
+              <div>
+                <h5>Recent Downloads</h5>
+                <small class="text-muted">Your latest file downloads</small>
+              </div>
+
+              <div class="d-flex gap-2">
+                <input
+                  id="tableSearch"
+                  class="form-control form-control-sm"
+                  style="max-width: 220px"
+                  placeholder="Search files..."
+                />
+                <button class="btn btn-sm btn-outline-primary" id="viewAllBtn">
+                  View All
+                </button>
+              </div>
+            </div>
+
+            <div class="table-responsive">
+              <table class="table table-hover">
+                <thead>
+                  <tr>
+                    <th>File</th>
+                    <th>Size</th>
+                    <th>Speed</th>
+                    <th>Status</th>
+                    <th>Time</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody id="downloadTable"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- DOWNLOADS -->
+        <section id="downloads" class="page-section">
+          <div class="section-card">
+            <div class="section-header">
+              <div>
+                <h5>Downloads</h5>
+                <small class="text-muted"
+                  >Manage active and completed downloads</small
+                >
+              </div>
+              <button class="btn btn-primary" id="newDownloadBtn">
+                <i class="bi bi-plus-lg me-1"></i> New Download
+              </button>
+            </div>
+            <div class="p-4" id="downloadsList"></div>
+          </div>
+        </section>
+
+        <!-- HISTORY -->
+        <section id="history" class="page-section">
+          <div class="section-card">
+            <div class="section-header">
+              <div>
+                <h5>Download History</h5>
+                <small class="text-muted">Completed and failed downloads</small>
+              </div>
+              <button
+                class="btn btn-outline-danger btn-sm"
+                id="clearHistoryBtn"
+              >
+                <i class="bi bi-trash me-1"></i> Clear History
+              </button>
+            </div>
+            <div class="p-4" id="historyList"></div>
+          </div>
+        </section>
+
+        <!-- ANALYTICS -->
+        <section id="analytics" class="page-section">
+          <div class="row g-4">
+            <div class="col-lg-8">
+              <div class="section-card p-4">
+                <h5>Download Activity</h5>
+                <p class="text-muted">Files downloaded over the last 7 days</p>
+                <div
+                  class="d-flex align-items-end gap-3"
+                  style="height: 260px"
+                  id="chart"
+                >
+                  <div
+                    class="chart-bar"
+                    style="height: 55%"
+                    title="Mon: 12"
+                  ></div>
+                  <div
+                    class="chart-bar"
+                    style="height: 70%"
+                    title="Tue: 18"
+                  ></div>
+                  <div
+                    class="chart-bar"
+                    style="height: 45%"
+                    title="Wed: 10"
+                  ></div>
+                  <div
+                    class="chart-bar"
+                    style="height: 85%"
+                    title="Thu: 23"
+                  ></div>
+                  <div
+                    class="chart-bar"
+                    style="height: 65%"
+                    title="Fri: 17"
+                  ></div>
+                  <div
+                    class="chart-bar"
+                    style="height: 95%"
+                    title="Sat: 26"
+                  ></div>
+                  <div
+                    class="chart-bar"
+                    style="height: 75%"
+                    title="Sun: 20"
+                  ></div>
+                </div>
+                <div
+                  class="d-flex justify-content-between text-muted small mt-2"
+                >
+                  <span>Mon</span><span>Tue</span><span>Wed</span
+                  ><span>Thu</span> <span>Fri</span><span>Sat</span
+                  ><span>Sun</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-lg-4">
+              <div class="section-card p-4 h-100">
+                <h5>Performance</h5>
+                <div class="mt-4">
+                  <div class="d-flex justify-content-between mb-2">
+                    <span>Success rate</span><strong>89%</strong>
+                  </div>
+                  <div class="progress mb-4">
+                    <div
+                      class="progress-bar bg-success"
+                      style="width: 89%"
+                    ></div>
+                  </div>
+
+                  <div class="d-flex justify-content-between mb-2">
+                    <span>Average speed</span><strong>18.4 MB/s</strong>
+                  </div>
+                  <div class="progress mb-4">
+                    <div class="progress-bar" style="width: 76%"></div>
+                  </div>
+
+                  <div class="d-flex justify-content-between mb-2">
+                    <span>Storage used</span><strong>4.8 / 20 GB</strong>
+                  </div>
+                  <div class="progress">
+                    <div
+                      class="progress-bar bg-warning"
+                      style="width: 24%"
+                    ></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- SETTINGS -->
+        <section id="settings" class="page-section">
+          <div class="section-card p-4">
+            <h5>Settings</h5>
+            <p class="text-muted">Configure how FileX handles downloads.</p>
+
+            <div class="row g-4 mt-1">
+              <div class="col-md-6">
+                <label class="form-label">Maximum concurrent downloads</label>
+                <select id="concurrency" class="form-select">
+                  <option>2</option>
+                  <option selected>4</option>
+                  <option>8</option>
+                  <option>16</option>
+                </select>
+                <small class="text-muted"
+                  >This can map directly to your Go semaphore/worker
+                  limit.</small
+                >
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label">Default download folder</label>
+                <input id="folder" class="form-control" value="./downloads" />
+              </div>
+
+              <div class="col-12">
+                <div class="form-check form-switch">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="notifications"
+                    checked
+                  />
+                  <label class="form-check-label" for="notifications"
+                    >Show download notifications</label
+                  >
+                </div>
+              </div>
+
+              <div class="col-12">
+                <button class="btn btn-primary" id="saveSettings">
+                  <i class="bi bi-check-lg me-1"></i> Save Settings
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+      <div id="toast" class="toast" role="alert">
+        <div class="toast-header">
+          <i class="bi bi-cloud-arrow-down me-2"></i>
+          <strong class="me-auto">FileX</strong>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="toast"
+          ></button>
+        </div>
+        <div class="toast-body" id="toastMessage"></div>
+      </div>
+    </div>
+
+    <style>
+      .chart-bar {
+        flex: 1;
+        min-width: 20px;
+        max-width: 65px;
+        background: #2563eb;
+        border-radius: 7px 7px 0 0;
+        transition: 0.2s;
+        cursor: pointer;
+      }
+      .chart-bar:hover {
+        opacity: 0.75;
+        transform: scaleY(1.02);
+      }
+    </style>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+      const downloads = [
+        {
+          id: 1,
+          name: "ubuntu-24.04.iso",
+          type: "ISO File",
+          icon: "bi-file-earmark-zip",
+          size: "4.2 GB",
+          speed: "21.4 MB/s",
+          status: "Completed",
+          time: "2 min ago",
+          progress: 100,
+        },
+        {
+          id: 2,
+          name: "project-source.zip",
+          type: "ZIP Archive",
+          icon: "bi-file-earmark-code",
+          size: "842 MB",
+          speed: "15.8 MB/s",
+          status: "Downloading",
+          time: "5 min ago",
+          progress: 67,
+        },
+        {
+          id: 3,
+          name: "research-paper.pdf",
+          type: "PDF Document",
+          icon: "bi-file-earmark-pdf",
+          size: "24 MB",
+          speed: "8.2 MB/s",
+          status: "Completed",
+          time: "18 min ago",
+          progress: 100,
+        },
+        {
+          id: 4,
+          name: "dataset.csv",
+          type: "CSV File",
+          icon: "bi-file-earmark",
+          size: "128 MB",
+          speed: "—",
+          status: "Failed",
+          time: "32 min ago",
+          progress: 0,
+        },
+      ];
+
+      const pageInfo = {
+        dashboard: ["Dashboard", "Manage your downloads"],
+        downloads: ["Downloads", "Manage active and completed downloads"],
+        history: ["History", "Your download history"],
+        analytics: ["Analytics", "Download performance and activity"],
+        settings: ["Settings", "Configure FileX"],
+      };
+
+      const toastElement = document.getElementById("toast");
+      const toast = new bootstrap.Toast(toastElement);
+
+      function showToast(message) {
+        document.getElementById("toastMessage").textContent = message;
+        toast.show();
+      }
+
+      function fileIcon(name) {
+        const ext = name.split(".").pop().toLowerCase();
+        if (["zip", "iso", "rar", "7z"].includes(ext))
+          return "bi-file-earmark-zip";
+        if (["pdf"].includes(ext)) return "bi-file-earmark-pdf";
+        if (["js", "ts", "go", "py", "java", "cpp"].includes(ext))
+          return "bi-file-earmark-code";
+        if (["jpg", "jpeg", "png", "webp"].includes(ext))
+          return "bi-file-earmark-image";
+        return "bi-file-earmark";
+      }
+
+      function renderTable(list = downloads) {
+        const tbody = document.getElementById("downloadTable");
+
+        if (!list.length) {
+          tbody.innerHTML = `
+        <tr>
+          <td colspan="6">
+            <div class="empty-state">
+              <i class="bi bi-inbox d-block mb-2"></i>
+              No downloads found.
+            </div>
+          </td>
+        </tr>`;
+          return;
+        }
+
+        tbody.innerHTML = list
+          .map((d) => {
+            const statusClass =
+              d.status === "Completed"
+                ? "status-completed"
+                : d.status === "Downloading"
+                  ? "status-progress"
+                  : "status-failed";
+
+            return `
+        <tr data-id="${d.id}">
+          <td>
+            <div class="file-name">
+              <div class="file-icon"><i class="bi ${d.icon || fileIcon(d.name)}"></i></div>
+              <div>
+                <strong>${escapeHtml(d.name)}</strong>
+                <small>${escapeHtml(d.type || "File")}</small>
+              </div>
+            </div>
+          </td>
+          <td>${d.size}</td>
+          <td>${d.speed}</td>
+          <td>
+            ${
+              d.status === "Downloading"
+                ? `
+              <div style="min-width:130px">
+                <div class="d-flex justify-content-between small mb-1">
+                  <span>${d.progress}%</span><span class="text-muted">Active</span>
+                </div>
+                <div class="progress"><div class="progress-bar" style="width:${d.progress}%"></div></div>
+              </div>`
+                : `<span class="status ${statusClass}">${d.status}</span>`
+            }
+          </td>
+          <td>${d.time}</td>
+          <td>
+            <div class="dropdown">
+              <button class="btn btn-sm action-btn" data-bs-toggle="dropdown">
+                <i class="bi bi-three-dots"></i>
+              </button>
+              <ul class="dropdown-menu dropdown-menu-end">
+                <li><button class="dropdown-item action-details" data-id="${d.id}">
+                  <i class="bi bi-info-circle me-2"></i>Details</button></li>
+                ${
+                  d.status === "Downloading"
+                    ? `
+                <li><button class="dropdown-item action-cancel" data-id="${d.id}">
+                  <i class="bi bi-pause-circle me-2"></i>Pause</button></li>`
+                    : ""
+                }
+                ${
+                  d.status === "Completed"
+                    ? `
+                <li><button class="dropdown-item action-open" data-id="${d.id}">
+                  <i class="bi bi-folder2-open me-2"></i>Open</button></li>`
+                    : ""
+                }
+                <li><hr class="dropdown-divider"></li>
+                <li><button class="dropdown-item text-danger action-delete" data-id="${d.id}">
+                  <i class="bi bi-trash me-2"></i>Remove</button></li>
+              </ul>
+            </div>
+          </td>
+        </tr>`;
+          })
+          .join("");
+      }
+
+      function renderDownloadsPage() {
+        const container = document.getElementById("downloadsList");
+
+        const active = downloads.filter((d) => d.status === "Downloading");
+
+        if (!active.length) {
+          container.innerHTML = `
+        <div class="empty-state">
+          <i class="bi bi-check2-circle d-block mb-2"></i>
+          No active downloads right now.
+        </div>`;
+          return;
+        }
+
+        container.innerHTML = active
+          .map(
+            (d) => `
+      <div class="border rounded-3 p-3 mb-3">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <div>
+            <strong>${escapeHtml(d.name)}</strong>
+            <div class="small text-muted">${d.size} · ${d.speed}</div>
+          </div>
+          <span class="status status-progress">${d.progress}%</span>
+        </div>
+        <div class="progress mb-3">
+          <div class="progress-bar" style="width:${d.progress}%"></div>
+        </div>
+        <button class="btn btn-sm btn-outline-danger action-cancel" data-id="${d.id}">
+          <i class="bi bi-x-circle me-1"></i> Cancel
+        </button>
+      </div>
+    `,
+          )
+          .join("");
+      }
+
+      function renderHistory() {
+        const container = document.getElementById("historyList");
+        const history = downloads.filter((d) => d.status !== "Downloading");
+
+        if (!history.length) {
+          container.innerHTML = `<div class="empty-state"><i class="bi bi-clock-history d-block mb-2"></i>History is empty.</div>`;
+          return;
+        }
+
+        container.innerHTML = history
+          .map(
+            (d) => `
+      <div class="d-flex justify-content-between align-items-center border-bottom py-3">
+        <div class="file-name">
+          <div class="file-icon"><i class="bi ${d.icon || fileIcon(d.name)}"></i></div>
+          <div>
+            <strong>${escapeHtml(d.name)}</strong>
+            <small>${d.size} · ${d.time}</small>
+          </div>
+        </div>
+        <span class="status ${d.status === "Completed" ? "status-completed" : "status-failed"}">${d.status}</span>
+      </div>
+    `,
+          )
+          .join("");
+      }
+
+      function escapeHtml(value) {
+        return String(value).replace(
+          /[&<>"']/g,
+          (char) =>
+            ({
+              "&": "&amp;",
+              "<": "&lt;",
+              ">": "&gt;",
+              '"': "&quot;",
+              "'": "&#039;",
+            })[char],
+        );
+      }
+
+      function updateStats() {
+        document.getElementById("totalDownloads").textContent =
+          128 + Math.max(0, downloads.length - 4);
+        document.getElementById("completedDownloads").textContent =
+          114 +
+          downloads.filter((d) => d.status === "Completed" && d.id > 4).length;
+      }
+
+      function navigate(page) {
+        document
+          .querySelectorAll(".page-section")
+          .forEach((section) => section.classList.remove("active"));
+        document.getElementById(page).classList.add("active");
+
+        document
+          .querySelectorAll(".sidebar-link[data-page]")
+          .forEach((link) => {
+            link.classList.toggle("active", link.dataset.page === page);
+          });
+
+        document.getElementById("pageTitle").textContent = pageInfo[page][0];
+        document.getElementById("pageSubtitle").textContent = pageInfo[page][1];
+
+        if (page === "downloads") renderDownloadsPage();
+        if (page === "history") renderHistory();
+      }
+
+      document.querySelectorAll(".sidebar-link[data-page]").forEach((link) => {
+        link.addEventListener("click", () => navigate(link.dataset.page));
+      });
+
+      document
+        .getElementById("downloadForm")
+        .addEventListener("submit", (event) => {
+          event.preventDefault();
+
+          const input = document.getElementById("urlInput");
+          const url = input.value.trim();
+
+          try {
+            const parsed = new URL(url);
+            if (!["http:", "https:"].includes(parsed.protocol))
+              throw new Error();
+          } catch {
+            input.classList.add("is-invalid");
+            showToast("Please enter a valid HTTP or HTTPS URL.");
+            return;
+          }
+
+          input.classList.remove("is-invalid");
+
+          let name =
+            decodeURIComponent(parsed.pathname.split("/").pop()) ||
+            "downloaded-file";
+          if (!name.includes(".")) name += ".bin";
+
+          const newDownload = {
+            id: Date.now(),
+            name,
+            type: "Remote File",
+            icon: fileIcon(name),
+            size: "Calculating...",
+            speed: "Starting...",
+            status: "Downloading",
+            time: "Just now",
+            progress: 0,
+          };
+
+          downloads.unshift(newDownload);
+          renderTable();
+          updateStats();
+          input.value = "";
+
+          showToast(`${name} added to the download queue.`);
+
+          // Demo progress simulation.
+          const timer = setInterval(() => {
+            const item = downloads.find((d) => d.id === newDownload.id);
+            if (!item) {
+              clearInterval(timer);
+              return;
+            }
+
+            item.progress += Math.floor(Math.random() * 15) + 5;
+            item.speed = (Math.random() * 15 + 8).toFixed(1) + " MB/s";
+            item.size =
+              item.size === "Calculating..." ? "Downloading..." : item.size;
+
+            if (item.progress >= 100) {
+              item.progress = 100;
+              item.status = "Completed";
+              item.speed = "12.8 MB/s";
+              item.size = "Completed";
+              item.time = "Just now";
+              clearInterval(timer);
+              showToast(`${item.name} finished downloading.`);
+            }
+
+            renderTable();
+            renderDownloadsPage();
+            renderHistory();
+            updateStats();
+          }, 1200);
+        });
+
+      document
+        .getElementById("tableSearch")
+        .addEventListener("input", (event) => {
+          const query = event.target.value.toLowerCase();
+          renderTable(
+            downloads.filter((d) => d.name.toLowerCase().includes(query)),
+          );
+        });
+
+      document
+        .getElementById("viewAllBtn")
+        .addEventListener("click", () => navigate("downloads"));
+
+      document
+        .getElementById("newDownloadBtn")
+        .addEventListener("click", () => {
+          navigate("dashboard");
+          setTimeout(() => document.getElementById("urlInput").focus(), 50);
+        });
+
+      document.addEventListener("click", (event) => {
+        const cancel = event.target.closest(".action-cancel");
+        const remove = event.target.closest(".action-delete");
+        const details = event.target.closest(".action-details");
+        const open = event.target.closest(".action-open");
+
+        if (cancel) {
+          const item = downloads.find((d) => d.id == cancel.dataset.id);
+          if (item) {
+            item.status = "Failed";
+            item.speed = "Paused";
+            item.time = "Just now";
+            renderTable();
+            renderDownloadsPage();
+            renderHistory();
+            showToast(`${item.name} was paused.`);
+          }
+        }
+
+        if (remove) {
+          const index = downloads.findIndex((d) => d.id == remove.dataset.id);
+          if (index !== -1) {
+            const [item] = downloads.splice(index, 1);
+            renderTable();
+            renderDownloadsPage();
+            renderHistory();
+            updateStats();
+            showToast(`${item.name} was removed.`);
+          }
+        }
+
+        if (details) {
+          const item = downloads.find((d) => d.id == details.dataset.id);
+          if (item)
+            showToast(
+              `${item.name} · ${item.size} · ${item.status} · ${item.speed}`,
+            );
+        }
+
+        if (open) {
+          showToast("Open-folder integration will connect to the Go backend.");
+        }
+      });
+
+      document
+        .getElementById("clearHistoryBtn")
+        .addEventListener("click", () => {
+          if (!confirm("Clear completed and failed downloads from history?"))
+            return;
+
+          for (let i = downloads.length - 1; i >= 0; i--) {
+            if (downloads[i].status !== "Downloading") downloads.splice(i, 1);
+          }
+
+          renderTable();
+          renderHistory();
+          updateStats();
+          showToast("Download history cleared.");
+        });
+
+      document.getElementById("saveSettings").addEventListener("click", () => {
+        localStorage.setItem(
+          "filexConcurrency",
+          document.getElementById("concurrency").value,
+        );
+        localStorage.setItem(
+          "filexFolder",
+          document.getElementById("folder").value,
+        );
+        localStorage.setItem(
+          "filexNotifications",
+          document.getElementById("notifications").checked,
+        );
+        showToast("Settings saved locally.");
+      });
+
+      document.getElementById("helpBtn").addEventListener("click", () => {
+        alert(
+          "FileX Help\n\n" +
+            "1. Paste a direct file URL.\n" +
+            "2. Click Download.\n" +
+            "3. Track progress from Downloads.\n" +
+            "4. Use History for completed/failed downloads.\n\n" +
+            "The current page is a frontend demo. Connect the form to your Go API to perform real downloads.",
+        );
+      });
+
+      document.getElementById("logoutBtn").addEventListener("click", () => {
+        if (confirm("Log out of FileX?"))
+          showToast("Logout would be handled by your authentication backend.");
+      });
+
+      // Restore saved settings.
+      const savedConcurrency = localStorage.getItem("filexConcurrency");
+      const savedFolder = localStorage.getItem("filexFolder");
+      const savedNotifications = localStorage.getItem("filexNotifications");
+
+      if (savedConcurrency)
+        document.getElementById("concurrency").value = savedConcurrency;
+      if (savedFolder) document.getElementById("folder").value = savedFolder;
+      if (savedNotifications !== null)
+        document.getElementById("notifications").checked =
+          savedNotifications === "true";
+
+      renderTable();
+      renderDownloadsPage();
+      renderHistory();
+    </script>
+  </body>
+</html>
+
+FileX_dashboard_usable.html HTML
